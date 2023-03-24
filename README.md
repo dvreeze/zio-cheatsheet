@@ -80,7 +80,7 @@
 
 | Name               | From                     | Given                                   | To                       |
 | ------------------ | ------------------------ | --------------------------------------- | ------------------------ |
-| ZIO.service        | `given Tag[A]`           |                                         | `ZIO[A, Nothing, A]`     |
+| ZIO.service        |                          | `given Tag[A]`                          | `ZIO[A, Nothing, A]`     |
 | provideEnvironment | `ZIO[R, E, A]`           | `ZEnvironment[R]`                       | `IO[E, A]`               |
 | provideLayer       | `ZIO[R, E, A]`           | `ZLayer[R0, E, R]`                      | `ZIO[R0, E, A]`          |
 
