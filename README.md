@@ -55,24 +55,24 @@
 | unit               | `IO[E, A]`               |                                         | `IO[E, Unit]`            |
 | flatMap            | `IO[E, A]`               | `A => IO[E1, B]`                        | `IO[E1, B]`              |
 | flatten            | `IO[E, IO[E1, A]]`       |                                         | `IO[E1, A]`              |
-| mapBoth            | `IO[E, A]`               | `E => E2`<br>`A => B`                   | `IO[E2, B]`              |
+| mapBoth            | `IO[E, A]`               | `E => E2` <br> `A => B`                 | `IO[E2, B]`              |
 | mapError           | `IO[E, A]`               | `E => E2`                               | `IO[E2, A]`              |
 | mapErrorCause      | `IO[E, A]`               | `Cause[E] => Cause[E2]`                 | `IO[E2, A]`              |
 | flatMapError       | `IO[E, A]`               | `E => IO[Nothing, E2]`                  | `IO[E2, A]`              |
-| collect            | `IO[E, A]`               | `E1`<br>`PartialFunction[A, B]`         | `IO[E1, B]`              |
+| collect            | `IO[E, A]`               | `E1` <br> `PartialFunction[A, B]`       | `IO[E1, B]`              |
 | sandbox            | `IO[E, A]`               |                                         | `IO[Cause[E], A]`        |
 | flip               | `IO[E, A]`               |                                         | `IO[A, E]`               |
 | tap                | `IO[E, A]`               | `A => IO[E1, _]`                        | `IO[E1, A]`              |
-| tapBoth            | `IO[E, A]`               | `E => IO[E1, _]`<br>`A => IO[E1, _]`    | `IO[E1, A]`              |
+| tapBoth            | `IO[E, A]`               | `E => IO[E1, _]` <br> `A => IO[E1, _]`  | `IO[E1, A]`              |
 | tapError           | `IO[E, A]`               | `E => IO[E1, _]`                        | `IO[E1, A]`              |
 | absolve            | `IO[E, Either[E, A]]`    |                                         | `IO[E, A]`               |
 | some               | `IO[E, Option[A]]`       |                                         | `IO[Option[E], A]`       |
 | head               | `IO[E, List[A]]`         |                                         | `IO[Option[E], A]`       |
 | toFuture           | `IO[Throwable, A]`       |                                         | `IO[Nothing, Future[A]]` |
-| filterOrDie        | `IO[E, A]`               | `A => Boolean`<br>`Throwable`           | `IO[E, A]`               |
-| filterOrDieMessage | `IO[E, A]`               | `A => Boolean`<br>`String`              | `IO[E, A]`               |
-| filterOrElse       | `IO[E, A]`               | `A => Boolean`<br>`A => IO[E, A]`       | `IO[E, A]`               |
-| filterOrFail       | `IO[E, A]`               | `A => Boolean`<br>`E`                   | `IO[E, A]`               |
+| filterOrDie        | `IO[E, A]`               | `A => Boolean` <br> `Throwable`         | `IO[E, A]`               |
+| filterOrDieMessage | `IO[E, A]`               | `A => Boolean` <br> `String`            | `IO[E, A]`               |
+| filterOrElse       | `IO[E, A]`               | `A => Boolean` <br> `A => IO[E, A]`     | `IO[E, A]`               |
+| filterOrFail       | `IO[E, A]`               | `A => Boolean` <br> `E`                 | `IO[E, A]`               |
 | when               | `IO[E, A]`               | `Boolean`                               | `IO[E, Option[A]]`       |
 | unless             | `IO[E, A]`               | `Boolean`                               | `IO[E, Option[A]]`       |
 
@@ -86,22 +86,22 @@
 
 ## Recover from errors
 
-| Name          | From       | Given                                       | To                          |
-| ------------- | ---------- | ------------------------------------------- | --------------------------- |
-| either        | `IO[E, A]` |                                             | `IO[Nothing, Either[E, A]]` |
-| option        | `IO[E, A]` |                                             | `IO[Nothing, Option[A]]`    |
-| ignore        | `IO[E, A]` |                                             | `IO[Nothing, Unit]`         |
-| exit          | `IO[E, A]` |                                             | `IO[Nothing, Exit[E, A]]`   |
-| `<>` (orElse) | `IO[E, A]` | `IO[E2, A1]`                                | `IO[E2, A1]`                |
-| orElseEither  | `IO[E, A]` | `IO[E2, B]`                                 | `IO[E2, Either[A, B]]`      |
-| fold          | `IO[E, A]` | `E => B`<br>`A => B`                        | `IO[Nothing, B]`            |
-| foldZIO       | `IO[E, A]` | `E => IO[E2, B]`<br>`A => IO[E2, B]`        | `IO[E2, B]`                 |
-| foldCauseZIO  | `IO[E, A]` | `Cause[E] => IO[E2, B]`<br>`A => IO[E2, B]` | `IO[E2, B]`                 |
-| catchAll      | `IO[E, A]` | `E => IO[E2, A1]`                           | `IO[E2, A1]`                |
-| catchAllCause | `IO[E, A]` | `Cause[E] => IO[E2, A1]`                    | `IO[E2, A1]`                |
-| catchSome     | `IO[E, A]` | `PartialFunction[E, IO[E1, A1]]`            | `IO[E1, A1]`                |
-| retry         | `IO[E, A]` | `Schedule[E, S]`                            | `IO[E, A]`                  |
-| eventually    | `IO[E, A]` |                                             | `IO[Nothing, A]`            |
+| Name          | From       | Given                                         | To                          |
+| ------------- | ---------- | --------------------------------------------- | --------------------------- |
+| either        | `IO[E, A]` |                                               | `IO[Nothing, Either[E, A]]` |
+| option        | `IO[E, A]` |                                               | `IO[Nothing, Option[A]]`    |
+| ignore        | `IO[E, A]` |                                               | `IO[Nothing, Unit]`         |
+| exit          | `IO[E, A]` |                                               | `IO[Nothing, Exit[E, A]]`   |
+| `<>` (orElse) | `IO[E, A]` | `IO[E2, A1]`                                  | `IO[E2, A1]`                |
+| orElseEither  | `IO[E, A]` | `IO[E2, B]`                                   | `IO[E2, Either[A, B]]`      |
+| fold          | `IO[E, A]` | `E => B` <br> `A => B`                        | `IO[Nothing, B]`            |
+| foldZIO       | `IO[E, A]` | `E => IO[E2, B]` <br> `A => IO[E2, B]`        | `IO[E2, B]`                 |
+| foldCauseZIO  | `IO[E, A]` | `Cause[E] => IO[E2, B]` <br> `A => IO[E2, B]` | `IO[E2, B]`                 |
+| catchAll      | `IO[E, A]` | `E => IO[E2, A1]`                             | `IO[E2, A1]`                |
+| catchAllCause | `IO[E, A]` | `Cause[E] => IO[E2, A1]`                      | `IO[E2, A1]`                |
+| catchSome     | `IO[E, A]` | `PartialFunction[E, IO[E1, A1]]`              | `IO[E1, A1]`                |
+| retry         | `IO[E, A]` | `Schedule[E, S]`                              | `IO[E, A]`                  |
+| eventually    | `IO[E, A]` |                                               | `IO[Nothing, A]`            |
 
 ## Terminate fiber with errors
 
@@ -110,7 +110,7 @@
 | orDie             | `IO[Throwable, A]` |                                                 | `IO[Nothing, A]`            |
 | orDieWith         | `IO[E, A]`         | `E => Throwable`                                | `IO[Nothing, A]`            |
 | refineOrDie       | `IO[Throwable, A]` | `PartialFunction[Throwable, E2]`                | `IO[E2, A]`                 |
-| refineOrDieWith   | `IO[E, A]`         | `PartialFunction[E, E2]`<br> `E => Throwable`   | `IO[E2, A]`                 |
+| refineOrDieWith   | `IO[E, A]`         | `PartialFunction[E, E2]` <br> `E => Throwable`  | `IO[E2, A]`                 |
 
 ## Combining effects + parallelism
 
