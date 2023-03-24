@@ -2,8 +2,8 @@
 
 - This is based on [ZIO](https://github.com/zio/zio) 2.0.X (in particular 2.0.10).
 - For simplicity, ZIO environment has been omitted but all the functions also work with the form `ZIO[R, E, A]`.
-- Function arguments are usually by name, but that has (mostly) been ignored for simplicity. Also, functions are often "more generic" than shown below.
-- For many functions there are several (unmentioned) related functions that are conceptually similar but differ in some detail. They are mostly easy to learn due to consistent naming.
+- Function arguments are usually by name, but that has (mostly) been ignored for simplicity. Also, functions are often "more generic" in their parameter types than shown below.
+- For many functions there are several (unmentioned) related functions that are conceptually similar but differ in some detail. They are usually easy to learn due to consistent naming.
 - Important ZIO types other than the functional effect type `ZIO[R, E, A]` have been left out. For example: `ZStream[R, E, A]`, `ZLayer[RIn, E, ROut]`, `Fiber[E, A]` and `Ref[A]`.
 - In the remainder of this cheat sheet, `E1 >: E`, but `E2` can be any error type. Also `A1 >: A`.
 
@@ -163,3 +163,15 @@
 | repeat      | `IO[E, A]` | `Schedule[A, B]` | `IO[E, B]`                     |
 | repeatUntil | `IO[E, A]` | `A => Boolean`   | `IO[E, A]`                     |
 | repeatWhile | `IO[E, A]` | `A => Boolean`   | `IO[E, A]`                     |
+
+## Logging
+
+| Name            | From       | Given            | To                             |
+| --------------- | ---------- | ---------------- | ------------------------------ |
+| ZIO.log         |            | `String`         | `IO[Nothing, Unit]`            |
+| ZIO.logFatal    |            | `String`         | `IO[Nothing, Unit]`            |
+| ZIO.logError    |            | `String`         | `IO[Nothing, Unit]`            |
+| ZIO.logWarning  |            | `String`         | `IO[Nothing, Unit]`            |
+| ZIO.logInfo     |            | `String`         | `IO[Nothing, Unit]`            |
+| ZIO.logDebug    |            | `String`         | `IO[Nothing, Unit]`            |
+| ZIO.logTrace    |            | `String`         | `IO[Nothing, Unit]`            |
