@@ -42,7 +42,7 @@
 | ZIO.whenCase                            | `A` <br> `PartialFunction[A, IO[E, B]]`                                                 | `IO[E, Option[B]]`                |
 | ZIO.whenCaseZIO                         | `IO[E, A]` <br> `PartialFunction[A, IO[E, B]]`                                          | `IO[E, Option[B]]`                |
 | ZIO.filter                              | `Iterable[A]` <br> `A => IO[E, Boolean]`                                                | `IO[E, List[A]]`                  |
-| ZIO.cond                                | `Boolean` <br> `IO[E, A]` <br> `E`                                                      | `IO[E, A]`                        |
+| ZIO.cond                                | `Boolean` <br> `A` <br> `E`                                                             | `IO[E, A]`                        |
 
 ## Transforming effects
 
