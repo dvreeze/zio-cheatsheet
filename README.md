@@ -5,6 +5,7 @@
 - Function arguments are usually by name, but that has (mostly) been ignored for simplicity.
 - For many functions there are several (unmentioned) related functions that are conceptually similar but differ in some detail.
 - Important ZIO types other than the functional effect type `ZIO[R, E, A]` have been left out. For example: `ZStream[R, E, A]`, `ZLayer[RIn, E, ROut]`, `Fiber[E, A]` and `Ref[A]`.
+- In the remainder of this cheat sheet, `E1 >: E`, but `E2` can be any error type. Also `A1 >: A`.
 
 ## Aliases
 
@@ -43,8 +44,6 @@
 
 ## Transforming effects
 
-Here `E1 >: E`, but `E2` can be any error type. Also `A1 >: A`. This is also true in the sections below.
-
 | Name               | From                     | Given                                   | To                       |
 | ------------------ | ------------------------ | --------------------------------------- | ------------------------ |
 | map                | `IO[E, A]`               | `A => B`                                | `IO[E, B]`               |
@@ -71,6 +70,13 @@ Here `E1 >: E`, but `E2` can be any error type. Also `A1 >: A`. This is also tru
 | filterOrElse       | `IO[E, A]`               | `A => Boolean`<br>`A => IO[E, A]`       | `IO[E, A]`               |
 | filterOrFail       | `IO[E, A]`               | `A => Boolean`<br>`E`                   | `IO[E, A]`               |
 
+## Introducing and injecting the environment
+
+| Name               | From                     | Given                                   | To                       |
+| ------------------ | ------------------------ | --------------------------------------- | ------------------------ |
+| ZIO.service        | `given Tag[A]`           |                                         | `ZIO[A, Nothing, A]`     |
+| provideEnvironment | `ZIO[R, E, A]`           | `ZEnvironment[R]`                       | `IO[E, A]`               |
+| provideLayer       | `ZIO[R, E, A]`           | `ZLayer[R0, E, R]`                      | `ZIO[R0, E, A]`          |
 
 ## Recover from errors
 
@@ -100,7 +106,6 @@ Here `E1 >: E`, but `E2` can be any error type. Also `A1 >: A`. This is also tru
 | refineOrDie       | `IO[Throwable, A]` | `PartialFunction[Throwable, E2]`                | `IO[E2, A]`                 |
 | refineOrDieWith   | `IO[E, A]`         | `PartialFunction[E, E2]`<br> `E => Throwable`   | `IO[E2, A]`                 |
 
-
 ## Combining effects + parallelism
 
 | Name               | From       | Given                                            | To                               |
@@ -108,6 +113,8 @@ Here `E1 >: E`, but `E2` can be any error type. Also `A1 >: A`. This is also tru
 | ZIO.foldLeft       |            | `Iterable[A]` <br> `S` <br> `(S, A) => IO[E, S]` | `IO[E, S]`                       |
 | ZIO.foreach        |            | `Iterable[A]` <br> `A => IO[E, B]`               | `IO[E, List[B]]`                 |
 | ZIO.foreachPar     |            | `Iterable[A]` <br> `A => IO[E, B]`               | `IO[E, List[B]]`                 |
+| ZIO.collectAll     |            | `Iterable[IO[E, A]]`                             | `IO[E, List[A]]`                 |
+| ZIO.collectAllPar  |            | `Iterable[IO[E, A]]`                             | `IO[E, List[A]]`                 |
 | ZIO.forkAll        |            | `Iterable[IO[E, A]]`                             | `IO[Nothing, Fiber[E, List[A]]]` |
 | fork               | `IO[E, A]` |                                                  | `IO[Nothing, Runtime[E, A]]`     |
 | `<*>` (zip)        | `IO[E, A]` | `IO[E1, B]`                                      | `IO[E1, (A, B)]`                 |
