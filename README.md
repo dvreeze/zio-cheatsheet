@@ -2,7 +2,7 @@
 
 - This is based on [ZIO](https://github.com/zio/zio) 2.0.X (in particular 2.0.10).
 - For simplicity, ZIO environment has been omitted but all the functions also work with the form `ZIO[R, E, A]`.
-- Function arguments are usually by name, but that has (mostly) been ignored for simplicity.
+- Function arguments are usually by name, but that has (mostly) been ignored for simplicity. Also, functions are often "more generic" than shown below.
 - For many functions there are several (unmentioned) related functions that are conceptually similar but differ in some detail.
 - Important ZIO types other than the functional effect type `ZIO[R, E, A]` have been left out. For example: `ZStream[R, E, A]`, `ZLayer[RIn, E, ROut]`, `Fiber[E, A]` and `Ref[A]`.
 - In the remainder of this cheat sheet, `E1 >: E`, but `E2` can be any error type. Also `A1 >: A`.
@@ -47,7 +47,10 @@
 | Name               | From                     | Given                                   | To                       |
 | ------------------ | ------------------------ | --------------------------------------- | ------------------------ |
 | map                | `IO[E, A]`               | `A => B`                                | `IO[E, B]`               |
+| mapAttempt         | `IO[Throwable, A]`       | `A => B`                                | `IO[Throwable, B]`       |
 | as                 | `IO[E, A]`               | `B`                                     | `IO[E, B]`               |
+| asSome             | `IO[E, A]`               |                                         | `IO[E, Option[A]]`       |
+| asSomeError        | `IO[E, A]`               |                                         | `IO[Option[E], A]`       |
 | orElseFail         | `IO[E, A]`               | `E2`                                    | `IO[E2, A]`              |
 | unit               | `IO[E, A]`               |                                         | `IO[E, Unit]`            |
 | flatMap            | `IO[E, A]`               | `A => IO[E1, B]`                        | `IO[E1, B]`              |
@@ -56,6 +59,7 @@
 | mapError           | `IO[E, A]`               | `E => E2`                               | `IO[E2, A]`              |
 | mapErrorCause      | `IO[E, A]`               | `Cause[E] => Cause[E2]`                 | `IO[E2, A]`              |
 | flatMapError       | `IO[E, A]`               | `E => IO[Nothing, E2]`                  | `IO[E2, A]`              |
+| collect            | `IO[E, A]`               | `E1`<br>`PartialFunction[A, B]`         | `IO[E1, B]`              |
 | sandbox            | `IO[E, A]`               |                                         | `IO[Cause[E], A]`        |
 | flip               | `IO[E, A]`               |                                         | `IO[A, E]`               |
 | tap                | `IO[E, A]`               | `A => IO[E1, _]`                        | `IO[E1, A]`              |
@@ -69,8 +73,10 @@
 | filterOrDieMessage | `IO[E, A]`               | `A => Boolean`<br>`String`              | `IO[E, A]`               |
 | filterOrElse       | `IO[E, A]`               | `A => Boolean`<br>`A => IO[E, A]`       | `IO[E, A]`               |
 | filterOrFail       | `IO[E, A]`               | `A => Boolean`<br>`E`                   | `IO[E, A]`               |
+| when               | `IO[E, A]`               | `Boolean`                               | `IO[E, Option[A]]`       |
+| unless             | `IO[E, A]`               | `Boolean`                               | `IO[E, Option[A]]`       |
 
-## Introducing and injecting the environment
+## Declaring and providing the environment
 
 | Name               | From                     | Given                                   | To                       |
 | ------------------ | ------------------------ | --------------------------------------- | ------------------------ |
@@ -136,14 +142,16 @@
 | onInterrupt   | `IO[E, A]` | `UIO[_]`                   | `IO[E, A]` |
 | onTermination | `IO[E, A]` | `Cause[Nothing] => UIO[_]` | `IO[E, A]` |
 
-## Timing
+## Timing and repetition
 
-| Name      | From       | Given            | To                             |
-| --------- | ---------- | ---------------- | ------------------------------ |
-| ZIO.never |            |                  | `IO[Nothing, Nothing]`         |
-| ZIO.sleep |            | `Duration`       | `IO[Nothing, Unit]`            |
-| delay     | `IO[E, A]` | `Duration`       | `IO[E, A]`                     |
-| timeout   | `IO[E, A]` | `Duration`       | `IO[E, Option[A]]`             |
-| timed     | `IO[E, A]` |                  | `IO[E, (Duration, A)]`         |
-| forever   | `IO[E, A]` |                  | `IO[E, Nothing]`               |
-| repeat    | `IO[E, A]` | `Schedule[A, B]` | `IO[E, B]`                     |
+| Name        | From       | Given            | To                             |
+| ----------- | ---------- | ---------------- | ------------------------------ |
+| ZIO.never   |            |                  | `IO[Nothing, Nothing]`         |
+| ZIO.sleep   |            | `Duration`       | `IO[Nothing, Unit]`            |
+| delay       | `IO[E, A]` | `Duration`       | `IO[E, A]`                     |
+| timeout     | `IO[E, A]` | `Duration`       | `IO[E, Option[A]]`             |
+| timed       | `IO[E, A]` |                  | `IO[E, (Duration, A)]`         |
+| forever     | `IO[E, A]` |                  | `IO[E, Nothing]`               |
+| repeat      | `IO[E, A]` | `Schedule[A, B]` | `IO[E, B]`                     |
+| repeatUntil | `IO[E, A]` | `A => Boolean`   | `IO[E, A]`                     |
+| repeatWhile | `IO[E, A]` | `A => Boolean`   | `IO[E, A]`                     |
