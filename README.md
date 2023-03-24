@@ -3,7 +3,7 @@
 - This is based on [ZIO](https://github.com/zio/zio) 2.0.X (in particular 2.0.10).
 - For simplicity, ZIO environment has been omitted but all the functions also work with the form `ZIO[R, E, A]`.
 - Function arguments are usually by name, but that has (mostly) been ignored for simplicity. Also, functions are often "more generic" than shown below.
-- For many functions there are several (unmentioned) related functions that are conceptually similar but differ in some detail.
+- For many functions there are several (unmentioned) related functions that are conceptually similar but differ in some detail. They are mostly easy to learn due to consistent naming.
 - Important ZIO types other than the functional effect type `ZIO[R, E, A]` have been left out. For example: `ZStream[R, E, A]`, `ZLayer[RIn, E, ROut]`, `Fiber[E, A]` and `Ref[A]`.
 - In the remainder of this cheat sheet, `E1 >: E`, but `E2` can be any error type. Also `A1 >: A`.
 
@@ -37,10 +37,12 @@
 | ZIO.some                                | `A`                                                                                     | `IO[Nothing, Option[A]]`          |
 | ZIO.fromTry                             | `Try[A]`                                                                                | `IO[Throwable, A]`                |
 | ZIO.acquireReleaseWith                  | `IO[E, A]` (acquire) <br> `A => IO[Nothing, Any]` (release) <br> `A => IO[E, B]` (use)  | `IO[E, B]`                        |
-| ZIO.when                                | `Boolean` <br> `IO[E, A]`                                                               | `IO[E, Option[A]]`                |                      
+| ZIO.when                                | `Boolean` <br> `IO[E, A]`                                                               | `IO[E, Option[A]]`                |
 | ZIO.whenZIO                             | `IO[E, Boolean]` <br> `IO[E, A]`                                                        | `IO[E, Option[A]]`                |
 | ZIO.whenCase                            | `A` <br> `PartialFunction[A, IO[E, B]]`                                                 | `IO[E, Option[B]]`                |
 | ZIO.whenCaseZIO                         | `IO[E, A]` <br> `PartialFunction[A, IO[E, B]]`                                          | `IO[E, Option[B]]`                |
+| ZIO.filter                              | `Iterable[A]` <br> `A => IO[E, Boolean]`                                                | `IO[E, List[A]]`                  |
+| ZIO.cond                                | `Boolean` <br> `IO[E, A]` <br> `E`                                                      | `IO[E, A]`                        |
 
 ## Transforming effects
 
@@ -83,6 +85,12 @@
 | ZIO.service        |                          | `given Tag[A]`                          | `ZIO[A, Nothing, A]`     |
 | provideEnvironment | `ZIO[R, E, A]`           | `ZEnvironment[R]`                       | `IO[E, A]`               |
 | provideLayer       | `ZIO[R, E, A]`           | `ZLayer[R0, E, R]`                      | `ZIO[R0, E, A]`          |
+
+## Configuration
+
+| Name               | From                     | Given                                   | To                       |
+| ------------------ | ------------------------ | --------------------------------------- | ------------------------ |
+| ZIO.config         |                          | `Config[A]`                             | `IO[Config.Error, A]`    |
 
 ## Recover from errors
 
